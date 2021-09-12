@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL.h>
 
 #define SCREEN_WIDTH   1024
 #define SCREEN_HEIGHT  576
+#define AMOUNT_OF_COWS 10
 
 // Define the mighty cow as something drawable @ some x,y-coordinate:
 typedef struct _koe_ {
@@ -33,14 +35,10 @@ int main(int argc, char *argv[]) {
   koe greta = {(SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2), {135, 54, 0}}; // This color is brown //
 
   // We Make 10 Additional Cows //
-  struct _koe_ cows[10];
+  struct _koe_ cows[AMOUNT_OF_COWS];
 
-  for (int a = 0; a < 10; a++) {
-    int x = rand() % SCREEN_WIDTH + 1;
-    int y = rand() % SCREEN_HEIGHT + 1;    
-
-    koe cow = {x, y, {(rand() % 255 + 1), (rand() % 255 + 1), (rand() % 255 +1)}};
-
+  for (int a = 0; a < AMOUNT_OF_COWS; a++) {
+    koe cow = {(rand() % SCREEN_WIDTH), (rand() % SCREEN_HEIGHT), {(rand() % 255), (rand() % 255), (rand() % 255)}};
     cows[a] = cow;
   }
 
@@ -49,7 +47,7 @@ int main(int argc, char *argv[]) {
     renderField();
 
     // Render All Non-Playable Cows //
-    for (int a = 0; a < 10; a++) {
+    for (int a = 0; a < AMOUNT_OF_COWS; a++) {
       struct _koe_ cow = cows[a];
       renderCow(&cow);
     }
@@ -66,6 +64,8 @@ int main(int argc, char *argv[]) {
 }
 
 void gameInit() {
+  srand((uint8_t)time(0));
+
   unsigned int window_flags = 0;
   unsigned int renderer_flags = SDL_RENDERER_ACCELERATED;
 
@@ -112,7 +112,7 @@ void renderCow(koe *koetje) {
   SDL_Rect rechterachterpoot =	{koetje->x + 16, koetje->y + 12, 3, 3};
 				
   // RGB (135, 54, 0) should be a brown fur color for Greta
-  SDL_SetRenderDrawColor(renderer, koetje->colors[0], koetje->colors[1], koetje->colors[2], 255);
+  SDL_SetRenderDrawColor(renderer, ((Uint8)koetje->colors[0]), ((Uint8)koetje->colors[1]), ((Uint8)koetje->colors[2]), 255);
 		
   // Redraw Grata in the backbuffer to her updated location:
   SDL_RenderFillRect(renderer, &lijf);
